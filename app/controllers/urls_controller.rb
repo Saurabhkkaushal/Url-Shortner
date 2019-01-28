@@ -8,6 +8,7 @@ class UrlsController < ApplicationController
 
 
 
+
   def create
     long_url = params[:url][:long_url]
     #Rails.cache.clear
