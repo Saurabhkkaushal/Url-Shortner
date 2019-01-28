@@ -1,0 +1,15 @@
+<center>
+	<h1> Welcome To Our Portal </h1>
+	<% if user_signed_in? %>
+		<h3> <%= link_to 'info' , edit_user_registration_path %> </br></br></br> 
+		<%=link_to 'url_shortner', urls_path %>  </br></br></br> 
+		<%=link_to 'get_long_url', urls_longurl_path %>  </br> </br> </br>
+		<%= link_to 'generate_daily_report' ,  dailyreport_index_path %> </br> </br> </br> 
+		<%=link_to 'Search_Urls ',  urls_search_path %>  </br></br></br> 
+		<%= link_to 'logout' ,destroy_user_session_path , method: :delete %> </br> </br> </br>
+	</h3>
+	<% else %>	
+		<h1> <%= link_to 'signup' , new_user_registration_path %> </br> </br> 
+		<h1> <%= link_to 'signin' , new_user_session_path %> </br> </br> </br> </h1>
+	<% end %> 
+</center>	

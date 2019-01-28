@@ -1,0 +1,2 @@
+module DailyreportHelper
+end

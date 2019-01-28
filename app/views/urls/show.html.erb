@@ -1,0 +1,12 @@
+<center>
+	<p> Short Url:  </p>
+	
+	<h3><%= $domain_name + @var %> </h3> </br>
+
+	<h1> <%=link_to 'back', urls_path  %> </br> </br> 
+
+	<%=link_to 'logout',destroy_user_session_path , method: :delete  %>
+
+	<%=link_to 'cross check', urls_longurl_path %> </h1>
+</center>
+

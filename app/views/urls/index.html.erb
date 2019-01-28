@@ -1,0 +1,42 @@
+<center> 
+  <h1>
+    Generate Short URL
+  </h1>
+
+  <%= form_with(model: @url, local: true) do |form| %>
+    <% if @url.errors.any? %>
+      <div id="error_explanation">
+        <h2>
+          <%= pluralize(@url.errors.count, "error") %> prohibited
+          this form from being saved:
+        </h2>
+        <ul>
+          <% @url.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <p>
+      Long Url <%= form.text_field :long_url %><br>
+      
+    </p>
+ 
+   <p>
+      Domain <%= form.text_field :domain_name %><br>
+      
+    </p>
+    <h3>
+      <%= form.submit "create"%>
+    </h3>
+ 
+  <% end %>
+
+
+  <h1>
+    <%=link_to 'logout',destroy_user_session_path , method: :delete  %> </br> </br>
+
+    <%=link_to 'back',  root_path %>
+
+  </h1>
+</center>

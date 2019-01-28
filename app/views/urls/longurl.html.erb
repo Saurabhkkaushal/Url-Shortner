@@ -1,0 +1,16 @@
+<center>
+	<h1> Get Long Url</h1>
+	<%= form_with url: 'getlongurl'  do |form| %>
+	<p>
+    	Short Url <%= form.text_field :short_url %><br>
+    </p>
+ 	<p>
+    	<%= form.submit "Get_Long_Url" %>
+  	</p>
+ 	<% end %>
+
+	<h1> <%= link_to 'logout' ,destroy_user_session_path , method: :delete%> </br>
+
+	<%=link_to 'back',  root_path %> </h1>
+
+</center>
