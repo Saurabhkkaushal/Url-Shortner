@@ -48,7 +48,7 @@ class UrlsController < ApplicationController
           format.html {render 'urls/index' }
           format.json  { render json: {"shorturl"=> "please input in correct format "} }
         end
-  		end
+      end
     end
   end
 
@@ -80,7 +80,7 @@ class UrlsController < ApplicationController
           format.html {redirect_to urls_showlongurl_path(long_url: @long_url.long_url) }
           format.json  { render  json: {"longurl"=> @long_url.long_url} }
         end
-  	  else
+      else
         respond_to do |format|
           format.html {redirect_to urls_error_path}
           format.json  { render  json: {"longurl"=> "No mapping availabale"} }
@@ -109,11 +109,6 @@ class UrlsController < ApplicationController
     end
 
   end
-
-
-
-
-
 
   private
 
