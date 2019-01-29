@@ -12,11 +12,10 @@ class UrlsController < ApplicationController
     long_url = params[:url][:long_url]
     url = Url.find_by_long_url(params[:url][:long_url])
     if url.present? && url.domain_name == params[:url][:domain_name] 
-      puts "url.present"
       respond_to do |format|
         format.html {flash[:message] = "long url with same value already present and shorturl is: " + $domain_name + url.short_domain + '/' + url.short_url 
         redirect_to urls_path  } 
-        format.json  { render json: {"shorturl" => $domain_name + url.short_url} }
+        format.json  { render json: {"shorturl" => $domain_name +  url.short_domain + '/' + url.short_url} }
       end
 
     elsif url.present? && url.domain_name != params[:url][:domain_name]    
@@ -41,7 +40,7 @@ class UrlsController < ApplicationController
         respond_to do |format|
           @url.short_url = @url.short_domain + "/" + @url.short_url
           format.html {redirect_to url_path(id: @url , short_url: @url.short_url) }
-          format.json  { render json: {"shorturl"=> $domain_name + @url.short_url} }
+          format.json  { render json: {"shorturl"=> $domain_name + @url.short_domain + '/' + @url.short_url} }
         end
       else
         respond_to do |format|
@@ -56,7 +55,7 @@ class UrlsController < ApplicationController
   def show
 
     @short_url = params[:short_url]
-    puts @short_url
+
   end
 # view page for converting short url to long url
   def long_url
@@ -99,7 +98,6 @@ class UrlsController < ApplicationController
 # Elastic search
   def search
 
-    puts params
     query = params[:urls_search].presence && params[:urls_search][:query]
     if query
       query = "*" + query + "*"
