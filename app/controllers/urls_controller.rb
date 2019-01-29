@@ -42,8 +42,8 @@ class UrlsController < ApplicationController
           @url.short_url = @url.short_domain + "/" + @url.short_url
           format.html {redirect_to url_path(id: @url , short_url: @url.short_url) }
           format.json  { render json: {"shorturl"=> $domain_name + @url.short_url} }
-        end        
-  		else
+        end
+      else
         respond_to do |format|
           format.html {render 'urls/index' }
           format.json  { render json: {"shorturl"=> "please input in correct format "} }
