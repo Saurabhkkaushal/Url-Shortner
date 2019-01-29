@@ -1,5 +1,5 @@
 class DailyreportController < ApplicationController
 	def index
-		@dailyreport = Dailyreport.all
+		@dailyreport = Dailyreport.all.order(:date_today)
 	end
 end

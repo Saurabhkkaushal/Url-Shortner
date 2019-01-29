@@ -1,7 +1,7 @@
 class UrlsController < ApplicationController
   include UrlsHelper
   $domain_name = 'https://www.'
-
+#page for url shortner 
   def index
 
   	@url = Url.new
@@ -10,16 +10,16 @@ class UrlsController < ApplicationController
 
   def create
     long_url = params[:url][:long_url]
-    @url = Url.find_by_long_url(params[:url][:long_url])
-    if @url.present? && @url.domain_name == params[:url][:domain_name] #!= nil
+    url = Url.find_by_long_url(params[:url][:long_url])
+    if url.present? && url.domain_name == params[:url][:domain_name] 
       puts "url.present"
       respond_to do |format|
-        format.html {flash[:message] = "long url with same value already present and shorturl is: " + $domain_name +@url.short_domain + '/' + @url.short_url 
+        format.html {flash[:message] = "long url with same value already present and shorturl is: " + $domain_name + url.short_domain + '/' + url.short_url 
         redirect_to urls_path  } 
-        format.json  { render json: {"shorturl" => $domain_name + @url.short_url} }
+        format.json  { render json: {"shorturl" => $domain_name + url.short_url} }
       end
 
-    elsif @url.present? && @url.domain_name != params[:url][:domain_name]    
+    elsif url.present? && url.domain_name != params[:url][:domain_name]    
       respond_to do |format|
         format.html {flash[:message] = "short Url is present but domain name not matched please enter correct domain name" 
         redirect_to urls_path  } 
@@ -52,29 +52,30 @@ class UrlsController < ApplicationController
     end
   end
 
-
+# show Long Url to User
   def show
 
-    @var = params[:short_url]
-
+    @short_url = params[:short_url]
+    puts @short_url
   end
-
+# view page for converting short url to long url
   def long_url
 
     @url = Url.new
 
   end
 
+#Getting long url form a given short url
   def get_long_url
 
     if(params[:short_url] == "")
       flash[:message]="Please Enter Url"
       redirect_to urls_longurl_path
     else
-      @shorturl = params[:short_url]
-      len = @shorturl.length
-      @shorturl = @shorturl[17..len]
-      @long_url = Url.caching_implementation_for_short_Url(@shorturl)
+      shorturl = params[:short_url]
+      len = shorturl.length
+      shorturl = shorturl[17..len]
+      @long_url = Url.caching_implementation_for_short_Url(shorturl)
       if @long_url != nil 
         respond_to do |format|
           format.html {redirect_to urls_showlongurl_path(long_url: @long_url.long_url) }
@@ -82,7 +83,8 @@ class UrlsController < ApplicationController
         end
       else
         respond_to do |format|
-          format.html {redirect_to urls_error_path}
+          format.html {flash[:message] = "Not Found"
+           redirect_to urls_longurl_path }
           format.json  { render  json: {"longurl"=> "No mapping availabale"} }
         end
       end
@@ -91,13 +93,10 @@ class UrlsController < ApplicationController
 
 
   def show_long_url
-    @var = params[:long_url]
+    @long_url = params[:long_url]
   end
 
-  def error
-
-  end
-
+# Elastic search
   def search
 
     puts params

@@ -2,7 +2,10 @@ class Url < ApplicationRecord
   include Elasticsearch::Model
   include Elasticsearch::Model::Callbacks
   after_create :start_background_processing
-  
+  validates :long_url, url: true , uniqueness: true,presence: true 
+  validates :short_url , presence: true
+  validates :domain_name , presence: true , length: { minimum: 4 }
+
   settings do
     mappings dynamic: false do
     indexes :long_url, type: :text, analyzer: :english
@@ -10,11 +13,7 @@ class Url < ApplicationRecord
     indexes :domain_name, type: :text, analyzer: :english
     end
   end
-  validates :long_url, url: true , uniqueness: true
-  validates :long_url , presence: true 
-  before_validation :ensure_long_url_has_a_value
-  validates :short_url , presence: true
-  validates :domain_name , presence: true , length: { minimum: 4 }
+
   def start_background_processing
     HardWorker.perform_async
   end
@@ -53,24 +52,10 @@ class Url < ApplicationRecord
 		end
 		return short_domain
   end
-
-  def self.caching_implementation_for_long_Url(long_url)
-    return Rails.cache.fetch("#{long_url}", expires_in: 15.minutes) do
-      Url.find_by_long_url(long_url)
-    end
-  end
-
   def self.caching_implementation_for_short_Url(short_url)
-    return Rails.cache.fetch("#{short_url}",expires_in: 15.minutes) do
+    Rails.cache.fetch("#{short_url}",expires_in: 15.minutes) do
       Url.find_by_short_url(short_url)
     end
   end	
-
-  private
-  def ensure_long_url_has_a_value
-    if long_url.nil?
-      self.long_url = long_url unless long_url.blank?
-    end
-  end
 
 end

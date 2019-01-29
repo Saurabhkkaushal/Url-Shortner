@@ -1,11 +1,26 @@
-<h1>Elastic search for Urls</h1>
 
-<%= form_for :urls_search, url: urls_search_path, method: :get do |form| %>
+
+<head>
+  <style>
+  table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 15px;
+  }
+  </style>
+</head>
+<body>
+  <h1>Elastic search for Urls</h1>
+
+  <%= form_for :urls_search, url: urls_search_path, method: :get do |form| %>
   <%= form.text_field :query, value: params[:urls_search].presence && params[:urls_search][:query] %>
   <%= form.submit 'Search' %>
-<% end %>
+  <% end %>
 
-<% unless @urls.nil? %>
+  <% unless @urls.nil? %>
   <% if @urls.empty? %>
     <h2>No posts found matching your query.</h2>
   <% else %>
@@ -31,6 +46,8 @@
       <tbody>
     </table>
   <% end %>
-<% end %>
+  <% end %>
 
-<%=link_to 'back',  root_path %>
+  <%=link_to 'back',  root_path %>
+
+</body>
