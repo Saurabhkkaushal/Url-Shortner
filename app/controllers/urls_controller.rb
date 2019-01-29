@@ -3,33 +3,22 @@ class UrlsController < ApplicationController
   $domain_name = 'https://www.'
 
   def index
-  		@url = Url.new
+
+  	@url = Url.new
+
   end
-
-
-
-
 
   def create
     long_url = params[:url][:long_url]
-    #Rails.cache.clear
-    #@url =  Rails.cache.fetch("#{@var}", expires_in: 15.minutes) do
-    #          Url.find_by_long_url(@var)        
-     #       end
-    @url = Url.caching_implementation_for_long_Url(long_url)
-    #binding.pry
-    #puts "My Url" + @url
+    @url = Url.find_by_long_url(params[:url][:long_url])
   	if @url.present? && @url.domain_name == params[:url][:domain_name] #!= nil
       puts "url.present"
-      #binding.pry
       respond_to do |format|
             format.html {flash[:message] = "long url with same value already present and shorturl is: " + $domain_name +@url.short_domain + '/' + @url.short_url 
               redirect_to urls_path  } 
 
             format.json  { render json: {"shorturl" => $domain_name + @url.short_url} }
           end
-
-
 
     elsif @url.present? && @url.domain_name != params[:url][:domain_name]    
        respond_to do |format|
@@ -39,14 +28,9 @@ class UrlsController < ApplicationController
             format.json  { render json: {"shorturl"=> "short Url is present but domain name not matched please enter correct domain name"} }
           end
 
-
   	else
   		@url = Url.new(url_params)
-  		#@url.short_url = url_shortner(@url.long_url)
-
       @url.short_url = Url.url_shortner(@url.long_url)
-
-      #@url.short_domain = domain_shortner(@url.domain_name)
       @url.short_domain = Url.domain_shortner(@url.domain_name)
 
       if @url.short_url == 'error'
@@ -77,22 +61,20 @@ class UrlsController < ApplicationController
   end
 
 
-
-
-
-
-
-
   def show
+
     @var = params[:short_url]
+
   end
 
-  def longurl
+  def long_url
+
     @url = Url.new
+
   end
 
-  def getlongurl
-    #puts "FORMAT" + request.format
+  def get_long_url
+
     if(params[:short_url] == "")
       flash[:message]="Please Enter Url"
       redirect_to urls_longurl_path
@@ -100,12 +82,6 @@ class UrlsController < ApplicationController
       @shorturl = params[:short_url]
       len = @shorturl.length
       @shorturl = @shorturl[17..len]
-      #puts(@shorturl)
-      #Rails.cache.clear
-      #@long_url_var = Rails.cache.fetch("#{@shorturl}", expires_in: 15.minutes) do
-      #                Url.find_by_short_url(@shorturl)
-      #      end
-
       @long_url = Url.caching_implementation_for_short_Url(@shorturl)
   	  if @long_url != nil 
 
@@ -114,23 +90,21 @@ class UrlsController < ApplicationController
 
             format.json  { render  json: {"longurl"=> @long_url.long_url} }
           end
-
   	  else
            respond_to do |format|
             format.html {redirect_to urls_error_path}
-
             format.json  { render  json: {"longurl"=> "No mapping availabale"} }
-          end
-           
+          end      
   	  end
     end
+
   end
 
 
+  def show_long_url
 
-
-  def showlongurl
   	@var = params[:long_url]
+
   end
 
 
@@ -146,11 +120,14 @@ class UrlsController < ApplicationController
 
 
   def search
+
     puts params
     query = params[:urls_search].presence && params[:urls_search][:query]
     if query
-      @urls = Url.search(params[:urls_search][:query])
+      query = "*" + query + "*"
+      @urls = Url.search(query)
     end
+
   end
 
 
@@ -159,7 +136,11 @@ class UrlsController < ApplicationController
 
 
   private
+
 		def url_params
+
 			params.require(:url).permit(:long_url , :domain_name)
+
 		end
+
 end

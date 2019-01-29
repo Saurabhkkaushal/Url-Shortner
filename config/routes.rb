@@ -1,12 +1,12 @@
 Rails.application.routes.draw do
-  get 'urls/showlongurl' => 'urls#showlongurl'
-  get 'urls/longurl' => 'urls#longurl'
-  post 'urls/getlongurl' => 'urls#getlongurl'
+  get 'urls/showlongurl' => 'urls#show_long_url'
+  get 'urls/longurl' => 'urls#long_url'
+  post 'urls/getlongurl' => 'urls#get_long_url'
   get 'dailyreport/index' => 'dailyreport#index'
   get 'urls/error' => 'urls#error'
   get 'urls/search' => 'urls#search'
   #post 'urls/longurl' => 'urls#getlongurl'
-  post  'urls/getlongurl' => 'urls#getlongurl'
+  post  'urls/getlongurl' => 'urls#get_long_url'
   devise_for :users
   root 'welcome#index'
   require 'sidekiq/web'  
@@ -14,7 +14,7 @@ Rails.application.routes.draw do
 
   post 'shorten-url' => 'urls#create'
 
-  get 'short-url' => 'urls#getlongurl'
+  get 'short-url' => 'urls#get_long_url'
   resources :urls
   
 
