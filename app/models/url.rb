@@ -16,14 +16,12 @@ class Url < ApplicationRecord
   validates :short_url , presence: true
   validates :domain_name , presence: true , length: { minimum: 4 }
   def start_background_processing
-    HardWorker.perform_async  
-	end
+    HardWorker.perform_async
+  end
 
   def as_indexed_json(options={})
-
-	 as_json(only: [:long_url, :short_url, :domain_name])
-
-	end
+    as_json(only: [:long_url, :short_url, :domain_name])
+  end
 
 
   def self.url_shortner(long_url)
@@ -54,7 +52,7 @@ class Url < ApplicationRecord
 			puts itr
 		end
 		return short_domain
-	end
+  end
 
   def self.caching_implementation_for_long_Url(long_url)
     return Rails.cache.fetch("#{long_url}", expires_in: 15.minutes) do
@@ -74,5 +72,5 @@ class Url < ApplicationRecord
       self.long_url = long_url unless long_url.blank?
     end
   end
-  
+
 end
