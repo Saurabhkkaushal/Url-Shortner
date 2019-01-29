@@ -25,9 +25,8 @@ class UrlsController < ApplicationController
         redirect_to urls_path  } 
         format.json  { render json: {"shorturl"=> "short Url is present but domain name not matched please enter correct domain name"} }
       end
-
-  	else
-  		@url = Url.new(url_params)
+    else
+      @url = Url.new(url_params)
       @url.short_url = Url.url_shortner(@url.long_url)
       @url.short_domain = Url.domain_shortner(@url.domain_name)
 
@@ -38,12 +37,12 @@ class UrlsController < ApplicationController
           format.json  { render json: {"error"=>"sorry, Unable to convert"} }
         end
 
-  		elsif @url.save
+      elsif  @url.save
         respond_to do |format|
           @url.short_url = @url.short_domain + "/" + @url.short_url
           format.html {redirect_to url_path(id: @url , short_url: @url.short_url) }
           format.json  { render json: {"shorturl"=> $domain_name + @url.short_url} }
-        end
+        end        
   		else
         respond_to do |format|
           format.html {render 'urls/index' }
@@ -76,7 +75,7 @@ class UrlsController < ApplicationController
       len = @shorturl.length
       @shorturl = @shorturl[17..len]
       @long_url = Url.caching_implementation_for_short_Url(@shorturl)
-  	  if @long_url != nil 
+      if @long_url != nil 
         respond_to do |format|
           format.html {redirect_to urls_showlongurl_path(long_url: @long_url.long_url) }
           format.json  { render  json: {"longurl"=> @long_url.long_url} }
@@ -93,9 +92,7 @@ class UrlsController < ApplicationController
 
 
   def show_long_url
-
-  	@var = params[:long_url]
-
+    @var = params[:long_url]
   end
 
   def error
