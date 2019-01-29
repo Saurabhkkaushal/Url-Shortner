@@ -11,7 +11,7 @@ class UrlsController < ApplicationController
   def create
     long_url = params[:url][:long_url]
     @url = Url.find_by_long_url(params[:url][:long_url])
-  	if @url.present? && @url.domain_name == params[:url][:domain_name] #!= nil
+    if @url.present? && @url.domain_name == params[:url][:domain_name] #!= nil
       puts "url.present"
       respond_to do |format|
         format.html {flash[:message] = "long url with same value already present and shorturl is: " + $domain_name +@url.short_domain + '/' + @url.short_url 
@@ -84,10 +84,9 @@ class UrlsController < ApplicationController
         respond_to do |format|
           format.html {redirect_to urls_error_path}
           format.json  { render  json: {"longurl"=> "No mapping availabale"} }
-        end      
-  	  end
+        end
+      end
     end
-
   end
 
 
