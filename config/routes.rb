@@ -5,7 +5,6 @@ Rails.application.routes.draw do
   get 'dailyreport/index' => 'dailyreport#index'
   get 'urls/error' => 'urls#error'
   get 'urls/search' => 'urls#search'
-  #post 'urls/longurl' => 'urls#getlongurl'
   post  'urls/getlongurl' => 'urls#get_long_url'
   devise_for :users
   root 'welcome#index'
@@ -17,6 +16,4 @@ Rails.application.routes.draw do
   get 'short-url' => 'urls#get_long_url'
   resources :urls
   
-
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

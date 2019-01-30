@@ -85,8 +85,8 @@ class Url < ApplicationRecord
   def pass_parameter(url)
     puts url.domain_name
     url.short_url = url_shortner(url.long_url)
-    url.short_domain = domain_shortner(url.domain_name)
-    return url
+    short_domain = domain_shortner(url.domain_name)
+    return url , short_domain
   end
   def self.caching_implementation_for_short_Url(short_url)
       Rails.cache.fetch("#{short_url}",expires_in: 15.minutes) do
@@ -122,7 +122,7 @@ class Url < ApplicationRecord
     end
  
     def domain_shortner(domain_name)
-      binding.pry
+      #binding.pry
       short_domain = Domain.find_by_long_domain(domain_name).short_domain
       # encode_domain = Digest::MD5.hexdigest domain_name
       # short_domain = encode_domain[1..4]
