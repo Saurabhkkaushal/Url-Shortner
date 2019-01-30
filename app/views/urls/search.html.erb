@@ -16,6 +16,7 @@
   <h1>Elastic search for Urls</h1>
 
   <%= form_for :urls_search, url: urls_search_path, method: :get do |form| %>
+  <%= form.select :field, ['long_url', 'short_url']%>
   <%= form.text_field :query, value: params[:urls_search].presence && params[:urls_search][:query] %>
   <%= form.submit 'Search' %>
   <% end %>
