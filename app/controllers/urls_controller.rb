@@ -34,7 +34,6 @@ class UrlsController < ApplicationController
   def create
     long_url = params[:url][:long_url]
     domain_name = params[:url][:domain_name]
-
     url = Url.find_by_long_url(params[:url][:long_url])
     render_response_for_create_url(url,domain_name)
   end

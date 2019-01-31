@@ -14,7 +14,7 @@ module UrlsHelper
               "message" => "successful",
               "status" => "200,ok" ,
               "short_url" =>  domain.short_domain + '/' + url.short_url
-              } 
+              },status: :ok
             }
         else
           url = Url.new(url_params)
@@ -28,7 +28,7 @@ module UrlsHelper
               render json: {
                 "message" => "error",
                 "status" => "500 , Internal server error"
-              } 
+              } ,status: :internal_server_error
             }
           elsif  @url.save
          
@@ -41,7 +41,7 @@ module UrlsHelper
                 "message" => "successful",
                 "status" => "200,ok",
                 "shorturl"=>  @url.short_url
-              } 
+              } ,status: :ok
             }
          
           else
@@ -53,7 +53,7 @@ module UrlsHelper
               render json: {
                 "message" => "please input in correct format ",
                 "status" => "400,Bad Request"
-                }
+                },status: :bad_request
             }
           end
         end
@@ -68,7 +68,7 @@ module UrlsHelper
           render json: {
             "message" => "Given Domain is not available",
             "status" => "400,Bad Request"
-          } 
+          },status: :bad_request 
         }
       end
     end 
@@ -79,7 +79,7 @@ module UrlsHelper
   def render_reponse_for_long_url(long_url)
 
     respond_to do |format|
-        if long_url != nil 
+        if long_url.present?
           format.html {
             redirect_to urls_showlongurl_path(long_url: long_url.long_url)
           }
@@ -88,7 +88,7 @@ module UrlsHelper
               "message" => "successful",
               "status" => "200,ok",
               "long_url"=> long_url.long_url
-            } 
+            },status: :ok 
           }
         
         else
@@ -100,7 +100,7 @@ module UrlsHelper
             render  json: {
             "message" => "Not found",
             "status" => "404"
-            } 
+            } , status: :not_found
           }
         end  
       end

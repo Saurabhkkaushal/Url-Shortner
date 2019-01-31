@@ -4,8 +4,9 @@ class Url < ApplicationRecord
   
   validates :long_url, url: true , uniqueness: true,presence: true 
   validates :short_url , presence: true
-  validates :domain_name , presence: true , length: { minimum: 4 }
+  validates :domain_name , presence: true 
   after_create :start_background_processing
+
 
   settings index: {
   number_of_shards: 1,
@@ -44,7 +45,6 @@ class Url < ApplicationRecord
       end
     end
   end
-
 
   def self.custom_search(query , field)
     field = field + ".trigram"
@@ -93,15 +93,15 @@ class Url < ApplicationRecord
     def url_shortner(long_url)
       low = 1
       high = 7
-      short_url_1 = Digest::MD5.hexdigest long_url
+      encoded_short_url_1 = Digest::MD5.hexdigest long_url
 
-      short_url_2 = Digest::MD5.hexdigest short_url_1
+      encoded_short_url_2 = Digest::MD5.hexdigest encoded_short_url_1
 
-      short_url = short_url_2[low..low+high]
+      short_url = encoded_short_url_2[low..low+high]
       itr = 2 
 
-      while itr+high <= short_url_2.length && Url.find_by_short_url(short_url).present? do
-        short_url = short_url_2[itr..itr + high]
+      while itr+high <= encoded_short_url_2.length && Url.find_by_short_url(short_url).present? do
+        short_url = encoded_short_url_2[itr..itr + high]
         itr += 1
       end
       if Url.where(short_url:  short_url).first.present?
