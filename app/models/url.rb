@@ -1,19 +1,11 @@
 class Url < ApplicationRecord
   include Elasticsearch::Model
   include Elasticsearch::Model::Callbacks
- # before_save :create_new_url_object
   
   validates :long_url, url: true , uniqueness: true,presence: true 
   validates :short_url , presence: true
   validates :domain_name , presence: true , length: { minimum: 4 }
   after_create :start_background_processing
-  # settings do
-  #   mappings dynamic: false do
-  #   indexes :long_url, type: :text, analyzer: :english
-  #   indexes :short_url, type: :text, analyzer: :english
-  #   indexes :domain_name, type: :text, analyzer: :english
-  #   end
-  # end
 
   settings index: {
   number_of_shards: 1,
@@ -37,39 +29,36 @@ class Url < ApplicationRecord
         token_chars: ['letter', 'digit']
       }
     }
-  } } do
+    } 
+  } do
   mapping do
-        indexes :short_url, type: 'text', analyzer: 'english' do
+      indexes :short_url, type: 'text', analyzer: 'english' do
       indexes :keyword, analyzer: 'keyword'
       indexes :pattern, analyzer: 'pattern'
       indexes :trigram, analyzer: 'trigram'
+      end
+      indexes :long_url, type: 'text', analyzer: 'english' do
+      indexes :keyword, analyzer: 'keyword'
+      indexes :pattern, analyzer: 'pattern'
+      indexes :trigram, analyzer: 'trigram'
+      end
     end
-       indexes :long_url, type: 'text', analyzer: 'english' do
-      indexes :keyword, analyzer: 'keyword'
-      indexes :pattern, analyzer: 'pattern'
-      indexes :trigram, analyzer: 'trigram'
-  end
-
-
-  end
   end
 
 
   def self.custom_search(query , field)
-  puts field , query
-  field = field + ".trigram"
- # query = params[:urls_search][:query]
-  urls = self.__elasticsearch__.search(
-  {
-   query: {
-    bool: {
-     must: [{
-      term: {
-       "#{field}":"#{query}"
+    field = field + ".trigram"
+    urls = self.__elasticsearch__.search(
+    {
+     query: {
+      bool: {
+       must: [{
+        term: {
+         "#{field}":"#{query}"
+        }
+       }]
       }
-     }]
-    }
-   }
+     }
   }).records
   return urls
   end
@@ -83,7 +72,6 @@ class Url < ApplicationRecord
   end
 
   def pass_parameter(url)
-    puts url.domain_name
     url.short_url = url_shortner(url.long_url)
     short_domain = domain_shortner(url.domain_name)
     return url , short_domain
@@ -100,6 +88,7 @@ class Url < ApplicationRecord
       shorturl = shorturl[start..length]                                                        #parsing_short_url 
       long_url = Url.caching_implementation_for_short_Url(shorturl)
    end
+
   private
     def url_shortner(long_url)
       low = 1
@@ -111,7 +100,7 @@ class Url < ApplicationRecord
       short_url = short_url_2[low..low+high]
       itr = 2 
 
-      while itr+high <= short_url_2.length && Url.where(short_url:  short_url).first != nil do
+      while itr+high <= short_url_2.length && Url.find_by_short_url(short_url).present? do
         short_url = short_url_2[itr..itr + high]
         itr += 1
       end
@@ -122,17 +111,8 @@ class Url < ApplicationRecord
     end
  
     def domain_shortner(domain_name)
-      #binding.pry
       short_domain = Domain.find_by_long_domain(domain_name).short_domain
-      # encode_domain = Digest::MD5.hexdigest domain_name
-      # short_domain = encode_domain[1..4]
-      # itr = 2 
-      # while itr+3 <= encode_domain.length && Url.find_by_short_domain(short_domain) != nil && Url.find_by_short_domain(short_domain).domain_name != domain_name 
-      #   short_domain = encode_domain[itr..itr+3]
-      #   itr += 1
-      #   puts itr
-      # end
-        return short_domain
-      end
+      return short_domain
+    end
 
 end

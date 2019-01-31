@@ -80,7 +80,7 @@ class UrlsController < ApplicationController
     long_url: "https://www.proptiger.com/"
  }
 =end
-=end
+
 
   def get_long_url
 
