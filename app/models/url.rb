@@ -5,7 +5,7 @@ class Url < ApplicationRecord
   validates :long_url, url: true , uniqueness: true,presence: true 
   validates :short_url , presence: true
   validates :domain_name , presence: true 
-  after_create :start_background_processing
+  after_create :generate_daily_report_in_background
 
 
   settings index: {
@@ -63,7 +63,7 @@ class Url < ApplicationRecord
   return urls
   end
 
-  def start_background_processing
+  def generate_daily_report_in_background
     HardWorker.perform_async
   end
 

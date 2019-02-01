@@ -1,10 +1,16 @@
 module UrlsHelper
   #rendering reponse for create method
-  def render_response_for_create_url(url,domain_name)
+  def render_response_for_create_url(url,domain_name,long_url)
     domain = Domain.check_presence_of_domain(domain_name)
+    domain_from_long_url = (Domainatrix.parse(long_url)).domain
+    puts "dflu" 
+    puts domain_from_long_url
+    puts "dn"
+    puts domain_name
     if domain.present?
+      puts 'inside'
       respond_to do |format|
-        if url.present? 
+        if url.present? && domain_from_long_url == domain_name
           format.html {
             flash[:message] = "long url with same value already present and shorturl is: " +  domain.short_domain + '/' + url.short_url 
             redirect_to urls_path
@@ -15,6 +21,16 @@ module UrlsHelper
               "status" => "200,ok" ,
               "short_url" =>  domain.short_domain + '/' + url.short_url
               },status: :ok
+            }
+        elsif url.present? && domain_from_long_url != domain_name
+          format.html {
+            flash[:message] = "wrong input"  
+            redirect_to urls_path
+          } 
+          format.json {
+            render json: {
+              "message" => "wrong input",
+              },status: :bad_request
             }
         else
           url = Url.new(url_params)
@@ -30,8 +46,8 @@ module UrlsHelper
                 "status" => "500 , Internal server error"
               } ,status: :internal_server_error
             }
-          elsif  @url.save
-         
+          elsif domain_from_long_url == domain_name && @url.save 
+            puts 'here'
             @url.short_url = domain.short_domain + "/" + @url.short_url
             format.html {
               redirect_to url_path(id: @url , short_url: @url.short_url)
@@ -47,6 +63,7 @@ module UrlsHelper
           else
           
             format.html {
+              flash[:message] = "wrong input"
               render 'urls/index'
             }
             format.json  {

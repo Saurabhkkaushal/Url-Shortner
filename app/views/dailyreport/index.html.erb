@@ -22,12 +22,12 @@
         <th>Count</th>
       </tr>
 
-      <% @dailyreport.each do |dailyreport| %>
+      <% #@dailyreport.each do |dailyreport| %>
       <tr>
-        <td><%= dailyreport.date_today %></td>
-        <td><%= dailyreport.count %></td>
+        <td><%= @dailyreport.date_today %></td>
+        <td><%= @dailyreport.count %></td>
       </tr>
-      <% end %>
+      <% #end %>
     </table> 
     </br> </br> </br> </br>
     <%= link_to 'back' , root_path %>
